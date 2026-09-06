@@ -23,9 +23,13 @@ CPU-only, no training, classical signal processing on top of the public
 | Cross-model agreement, text present (`ink_9um` vs `canon_2um`, 9 vs 2.4 µm) | **0.64** Spearman | this page |
 | Run-to-run agreement, PHerc1447 | **0.16–0.37** (shuffled control: 0.09) | same |
 | Raw-render noise floor, 3 segments × 4 projections | max **0.505**, `period` never above 0.42 | [baseline_pherc1447](baseline_pherc1447.md) |
+| Cross-model agreement, PHerc1447 raw segments (22 segments, `gp`/`s5`/`tracer_ft`) | median **0.15**, max **0.39** | [screening_pherc1447_raw](screening_pherc1447_raw.md) |
+| `ink_9um` depth sweep on 11 locally rendered PHerc1447 segments (3 depths, 2 seeds, 3 angles) | **0 windows above 0.6** in 393 scorings | [pherc1447_auto_sweep](pherc1447_auto_sweep.md) |
+| `ink_9um` on all 22 PHerc1203 segments, rendered locally at 9.362 µm (3 depths, 2 seeds, 3 angles) | seed Spearman median **0.15**; 10 seed-supported windows, all fibre-aligned, none letter-like by eye | [pherc1203_predictions](pherc1203_predictions.md) |
 
 **Operating threshold:** above 0.6 on a prediction is a candidate; below 0.5 is
-background. A candidate seen by only one run is not a finding.
+background. A candidate seen by only one run is not yet a finding: it goes to a
+human, with the runs side by side. The tool ranks; it does not decide.
 
 ## Four things this repository establishes
 
@@ -59,7 +63,7 @@ ranking scored 1.000 — and the fix is documented rather than quietly applied.
 **3. A documented negative result on a Grand-Prize-eligible scroll.** The public
 `ink_9um` models (2 seeds, both directions) on the three pre-rendered
 `auto_grown` segments of **PHerc. 1447** show no detectable text. One window
-crossed the 0.6 threshold and was **retired by seed disagreement**: seed 42 and
+crossed the 0.6 threshold and was **set aside on seed disagreement**: seed 42 and
 seed 43 pointed at regions with zero overlap. Reproducible in ~10 minutes on a
 free Kaggle GPU, with a sanity check on PHerc0139 w035 that reproduces the
 tutorial's published predictions before anything else is believed.
@@ -98,8 +102,8 @@ and is fetched from the public bucket by the commands shown.
 
 - **Five real segments** is a small sample. `anisotropy` earns its place on a
   0.89-vs-0.61 gap that one more scroll could erase.
-- Only **PHerc0139 and PHerc1447** have been examined this way; the other
-  eligible scrolls have no public segments, or none with renders.
+- **PHerc0139, PHerc1447, PHerc0800 and PHerc1203** have been examined this way —
+  every eligible scroll that has public segments. The other ten have none.
 - The PHerc1447 negative concerns **three segments out of sixteen**, one depth
   window, two seeds, one checkpoint. It does not say the scroll has no ink — it
   says these models, on these segments, show none.
@@ -112,7 +116,10 @@ and is fetched from the public bucket by the commands shown.
 
 - [`feature_selection.md`](feature_selection.md) — how the weights were measured, and what it cost
 - [`benchmark_pherc0139.md`](benchmark_pherc0139.md) — six annotated segments, real predictions: what the within-segment benchmark can and cannot say
-- [`pherc1447_predictions.md`](pherc1447_predictions.md) — the GPU session, the negative result, the retired candidate
+- [`pherc1447_predictions.md`](pherc1447_predictions.md) — the GPU session, the negative result, the candidate set aside
+- [`screening_pherc1447_raw.md`](screening_pherc1447_raw.md) — 132 published predictions on 22 raw segments screened on CPU: no candidate survives cross-model concordance
+- [`pherc1447_auto_sweep.md`](pherc1447_auto_sweep.md) — the eleven unrendered PHerc1447 meshes rendered locally, `ink_9um` at three depths: nothing above threshold, and meshes too fragmentary for 10 mm windows
+- [`pherc1203_predictions.md`](pherc1203_predictions.md) — PHerc1203, 22 good meshes at the model's native resolution: no text; rotation to ±45° multiplies the fibre false positive and seed agreement does not defend against it
 - [`validation_w035.md`](validation_w035.md) — validation on real predictions of a known-text segment
 - [`baseline_pherc1447.md`](baseline_pherc1447.md) — the raw-render noise floor and the false-positive modes
 - [`GPU_INFERENZA.md`](GPU_INFERENZA.md) — running the GPU half on a rented or free machine
