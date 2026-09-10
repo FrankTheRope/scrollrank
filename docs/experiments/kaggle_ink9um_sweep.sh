@@ -41,7 +41,7 @@ run_seed () {
       echo "=== $SEG seed $S depth $D gpu $GPU $(date +%H:%M:%S)"
       CUDA_VISIBLE_DEVICES=$GPU python -m vesuvius.ink_detection.inference.infer "$Z" \
         "/kaggle/working/ckpt/hybrid_3d2d-seed$S/step-075000.pth" "$T" \
-        --overlap 0.5 --blend-mode hann --batch-size 4 \
+        --overlap 0.5 --blend-mode hann --batch-size 16 \
         --layer-start $L0 --layer-end $L1 --direction both 2>&1 | grep -E "INFO Selected|Error|error"
     done
   done
