@@ -61,7 +61,7 @@ cells), fixed in two rounds and re-verified. Kaggle cells:
 4. **The guards behaved correctly** — and that exposes their limit. No clip, no
    rollback, every agreement dip correctly read as monitor noise (e.g.
    agreement 0.922, gap 0.028 against a bootstrap spread of 0.046). But the
-   truth diagnostic on the held-out strip, which no guard reads, fell from 0.58
+   truth diagnostic (AUC against the canon prediction) on the held-out strip, which no guard reads, fell from 0.58
    to 0.51 over the `mil_free` run while every truth-free signal stayed green.
    On an unread scroll this degradation would have been invisible.
 
@@ -73,8 +73,9 @@ on that same prediction (≥ 128), not on human labels. The Challenge asks
 ink-detection work to be evaluated on its public `ink-labels` (2026-07)
 dataset, which has w028. Aligned to the crop (sharp interior optimum, see
 `docs/experiments/eval_official_labels_1667.py`), its validation region covers
-11.2 % of the held-out half and none of the training half: 314 804 pixels,
-23.8 % ink. Same pixels, two references:
+11.2 % of the held-out half and none of the training half: 314 804 pixels
+(0.29 cm², a 9.6 × 3.6 mm strip holding about one and a half letters), 23.8 % ink.
+The label offset was fitted by maximising the baseline's AUC; 8 px away it gives 0.880. Same pixels, two references:
 
 | map | vs official labels | vs canon prediction |
 |---|---|---|
@@ -87,7 +88,9 @@ dataset, which has w028. Aligned to the crop (sharp interior optimum, see
 
 **The "+0.020 with labels" result does not survive.** On the same pixels, the
 arm trained on the canon prediction moves slightly toward it (+0.006) and
-away from the official labels (−0.015). The canon model marks 35.6 % of these
+away from the official labels (−0.015; one seed on a small strip: a block
+bootstrap over 0.6 mm blocks puts the 95 % interval at −0.032 to +0.005, so
+the honest reading is *no gain*, not a proven loss). The canon model marks 35.6 % of these
 pixels as ink where the official labels mark 23.8 %; fine-tuning taught
 `ink_9um` to imitate that bias, not to see ink better. This experiment never
 had human labels in training, so it says nothing about whether a few cm² of
@@ -139,14 +142,14 @@ would have let that loss fall faster; it did not.
    On this crop the idea is negative; more training area was not tried.
 2. **Fine-tuning toward another model's predictions moves toward that model, not
    toward the ink.** Trained on the canon prediction, `ink_9um` agrees a little
-   more with canon and less with the official labels (−0.015). The earlier claim
+   more with canon and shows no gain on the official labels (−0.015, interval −0.032 to +0.005). The earlier claim
    that about 2 cm² of labels (the 11.0 × 19.2 mm training strip) improve the public model rested on scoring against the
    training reference; it is withdrawn. Whether a few cm² of *human* labels help
    is not tested here.
 3. **A truth-free guard is only as good as its independence from the loss.**
    In the first run the guard measured teacher/student agreement on interline
    pixels, and the distillation term enforced exactly that agreement — so the
-   guard was blind by construction and stayed green while the truth diagnostic
+   guard was blind by construction and stayed green while the truth diagnostic (AUC against canon)
    fell from 0.58 to 0.51. With distillation removed, the same guard fired in
    both geometry arms. In the truth-free arm it fired once and rolled training
    back to the pristine weights, but the resumed run still ended as the worst
@@ -162,7 +165,8 @@ would have let that loss fall faster; it did not.
 
 The MIL maps look *sharper* than the public model's — the central glyph has crisp
 edges — so the first worry was that the metric, whose truth is itself a smooth
-model prediction, penalises sharpness. It does not. Every number below is
+model prediction, penalises sharpness. It does not. Every number below comes from
+`docs/experiments/mechanism_finetune_1667.py` and is
 recomputed from the saved probability maps with code independent of the
 training script (all seven maps reproduce the script's AUCs to four decimals).
 
@@ -171,7 +175,7 @@ training script (all seven maps reproduce the script's AUCs to four decimals).
 | map | 19 µm | 38 µm | 77 µm | 154 µm | 307 µm |
 |---|---|---|---|---|---|
 | baseline | 0.772 | 0.771 | 0.773 | 0.777 | 0.785 |
-| `mil_free`, with distillation | 0.738 | 0.738 | 0.742 | 0.752 | 0.770 |
+| `mil_free`, with distillation | 0.738 | 0.738 | 0.742 | 0.752 | 0.769 |
 | `mil_free`, without | 0.711 | 0.710 | 0.715 | 0.726 | 0.750 |
 | supervised | 0.792 | 0.791 | 0.793 | 0.800 | 0.807 |
 
@@ -181,7 +185,7 @@ energy (mean |Laplacian|) of the MIL maps doubles on ink *and* on background
 (0.012 → 0.027 on ink, 0.011 → 0.024 on background); the fine decoder layers,
 which drifted most, learned fibre texture along with stroke edges.
 
-**2. The loss is concentrated where the geometry claimed certainty.** AUC by
+**2. In the truth-free arms, the loss is concentrated outside the row bands.** AUC by
 region of the test half (oracle bands):
 
 | map | row bands | interlines | mixed |
@@ -189,12 +193,20 @@ region of the test half (oracle bands):
 | baseline | 0.762 | 0.768 | 0.772 |
 | `mil_free`, with distillation | 0.747 (−0.016) | **0.716 (−0.053)** | 0.729 (−0.043) |
 | `mil_free`, without | 0.725 (−0.037) | **0.695 (−0.074)** | 0.692 (−0.080) |
+| `mil_oracle`, with distillation | 0.760 (−0.002) | 0.756 (−0.012) | 0.738 (−0.034) |
+| `mil_oracle`, without | 0.762 (0.000) | 0.767 (−0.001) | 0.741 (−0.031) |
 | supervised | 0.786 | 0.788 | 0.788 |
+
+In the truth-free arms the interline and mixed cells lose two to three times
+more than the row bands; in the oracle-band arms, whose negatives are cleaner
+(7.1 % ink), the interlines barely move and the loss sits in the mixed cells.
 
 **3. The "certain negatives" are not certain.** In the training half, **13.6 % of
 the pixels the truth-free arm labelled as certain negatives are ink** (7.1 % with
 the oracle bands), and in the test half **20 % of all ink lies inside interline
-bands**: ascenders and descenders, and rows that do not sit where the row profile
+bands**. "Ink" here is the canon prediction, the only reference on the training
+half; it over-marks ink (35.6 % of the labelled pixels against 23.8 % in the
+official labels), so the true shares are lower. The contaminating ink is ascenders and descenders, and rows that do not sit where the row profile
 says. The premise of the idea — interlinear gaps are guaranteed ink-free —
 holds for a row profile but not at the pixel level for this hand. A loss that
 treats one negative in seven as certain teaches the detector to suppress a

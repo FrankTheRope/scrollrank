@@ -6,7 +6,8 @@
 Inputs (produced earlier):
   work/kaggle_1667_w028/1667_render/w028_crop_render.zarr   27 slices, 9.596 µm in x, y and z
                                                             (built by build_control_pherc1667.py)
-  work/ctrl_1667/truth_canon_9um.npy                        team's canon prediction, upsampled to the same grid
+  work/kaggle_1667_w028/w028_crop_pred_canon.png            team's canon prediction (ds8 preview crop, 19.2 µm;
+                                                            build_control_pherc1667.py), upsampled 2x to the same grid
   data/1667_ctrl/w028_crop_s43_d5.tif                       public ink_9um prediction on the crop (Kaggle run)
 Output:
   work/mil_1667/mil_1667_w028.npz with stack, truth, ink9um, bands_oracle, bands_free, meta.
@@ -26,6 +27,7 @@ import warnings
 import numpy as np
 import tifffile
 import zarr
+from PIL import Image
 from scipy.ndimage import gaussian_filter
 
 warnings.filterwarnings("ignore")
@@ -41,7 +43,8 @@ def bands_from_profile(prof: np.ndarray, hi: float = 60, lo: float = 30, sigma: 
 
 def main() -> int:
     stack = np.asarray(zarr.open("work/kaggle_1667_w028/1667_render/w028_crop_render.zarr", mode="r")["0"])
-    truth = np.load("work/ctrl_1667/truth_canon_9um.npy").astype(np.uint8)
+    canon = np.asarray(Image.open("work/kaggle_1667_w028/w028_crop_pred_canon.png").convert("L"))
+    truth = np.kron(canon, np.ones((2, 2), np.uint8))   # = the work/ctrl_1667/truth_canon_9um.npy used so far
     ink = tifffile.imread("data/1667_ctrl/w028_crop_s43_d5.tif")
     H, W = truth.shape
     assert stack.shape[1:] == (H, W) == ink.shape

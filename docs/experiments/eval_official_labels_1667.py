@@ -11,11 +11,16 @@ ink-detection work to be evaluated on its public ink-labels dataset, which has w
       (37852 x 30583 at 2.4 um, binary)
 
 Alignment.  The label canvas (37852 x 30583) differs from the Data Browser `flatboi` surface volume
-(37420 x 30340) that the crop was cut from, by a translation.  It is found in two steps and checked
-for sharpness: (1) cross-correlation of the labels with the canon ds8 preview inside the supervision
-mask; (2) refinement inside the crop at 9.6 um by maximising the public ink_9um map's AUC against the
-labels.  The optimum must be interior and fall off in every direction (it does: 0.886 at the
-optimum, 0.864 at 16 px, 0.80 at 32 px).
+(37420 x 30340) that the crop was cut from, by a translation.  A cross-correlation of the labels with
+the canon ds8 preview (done once, by hand) gave the search window used here; this script then grid-
+searches the offset inside it at 9.6 um by maximising the public ink_9um map's AUC against the labels,
+and checks that the optimum is interior and falls off in every direction (0.886 at the optimum, 0.880
+at 8 px, 0.864 at 16 px, 0.80 at 32 px).  Because the offset is fitted on that map, its 0.886 is a
+best case; the other maps are scored at the same offset.
+
+Maps.  The maps scored are the ones listed in MAPS below: 2000 x 2800 maps of this crop, or 2000 x 1400
+maps of its held-out half.  To score a new map of the crop, add it to MAPS.  The inputs come from
+build_control_pherc1667.py (crop, canon preview, Kaggle ink_9um runs) and build_mil_1667.py.
 
 Evaluation.  Pixel AUC at 9.6 um, and at 38 um (4x4 cells at least half supervised), inside the
 official supervision mask, on the held-out half of the crop (x >= 1400).  In this crop the

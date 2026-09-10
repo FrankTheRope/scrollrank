@@ -73,8 +73,8 @@ stroke, then:
 
 | sub-score | weight | what it measures |
 |---|---|---|
-| `line_periodicity` | 4 | prominence of the dominant row-projection period inside the expected line-pitch range, over 3 vertical strips (coherence-weighted) and 7 tilt angles |
-| `anisotropy` | 1 | row periodicity vs column periodicity: lines are horizontal bands |
+| `line_periodicity` | 1 (the only vote since v0.8) | prominence of the dominant row-projection period inside the expected line-pitch range, over 3 vertical strips (coherence-weighted) and 7 tilt angles |
+| `anisotropy` | 0 (dropped in v0.8: no effect on six annotated segments) | row periodicity vs column periodicity: lines are horizontal bands |
 | `ink_fraction` | gate | multiplicative veto for implausible coverage (empty windows, smears) — not a ranking term |
 | `stroke_shape` | 0 | computed and reported; its sign is not stable across data types |
 
@@ -84,12 +84,13 @@ The weights were **measured, not chosen**: see
 0.22-0.28 at the 95th percentile), while `stroke_shape` inverts on real data and
 `ink_fraction` takes a single distinct value across 440 windows.
 
-Final score = weighted geometric mean of the voting sub-scores, multiplied by
-the ink gate.
+Final score (v0.8) = `line_periodicity` multiplied by the ink gate.
 
 **Operating threshold:** a window above 0.6 on a prediction is a candidate;
-below 0.5 is background. Measured separation of the final score (95th
-percentile): text 0.972-0.973, raw papyrus 0.136-0.297.
+below 0.5 is background. Measured separation of the v0.8 score (95th
+percentile): text predictions 1.00 against raw papyrus renders 0.10-0.26, and
+0.97-0.99 against 0.36-0.64 with predictions on both sides
+([results](docs/results.md)).
 
 ## Limits (read before trusting a number)
 

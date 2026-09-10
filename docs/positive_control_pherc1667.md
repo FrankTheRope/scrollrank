@@ -79,9 +79,11 @@ measures shared structure, not ink.
 
 **Against the official labels.** The public `ink-labels` (2026-07) dataset has
 w028. Aligned to the crop, its validation region (11.2 % of the held-out half,
-23.8 % ink) gives a sharper picture than the canon prediction: `ink_9um`
-forward **0.886**, reversed depth order **0.689**, and the canon prediction
-itself 0.930 (`docs/experiments/eval_official_labels_1667.py`). On the annotated
+23.8 % ink; 0.29 cm², about one and a half letters) gives a sharper picture
+than the canon prediction: `ink_9um` forward **0.886**, reversed depth order
+**0.689**, and the canon prediction itself 0.930
+(`docs/experiments/eval_official_labels_1667.py`). The label offset was fitted
+by maximising the forward map's AUC; 8 px away it still gives 0.880. On the annotated
 part of this segment the public model transfers better than the canon-based
 0.76 suggested; it still draws no legible glyph at 9.6 µm.
 

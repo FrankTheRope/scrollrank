@@ -56,11 +56,11 @@ def main() -> int:
     for ax in axes:
         ax.set_xticks([]), ax.set_yticks([])
     h, w = shown.shape
-    fig.suptitle(f"PHerc1667 w028, held-out half, annotated strip {h * 0.0096:.1f} x {w * 0.0096:.1f} mm at 9.6 um/px "
-                 f"(blue: edge of the annotated region). The public model marks where the letters are, as blobs, in one depth order only; "
-                 f"fine-tuning on row geometry or on another model's prediction makes it worse.",
+    fig.suptitle(f"PHerc1667 w028, held-out half: the strip annotated by the official labels, {h * 0.0096:.1f} x {w * 0.0096:.1f} mm "
+                 f"at 9.6 um/px (blue: edge of the annotated region).\nThe public model marks where the letters are, as blobs, "
+                 f"and well in one depth order only; neither fine-tuning improves it on the official labels.",
                  fontsize=8, x=0.01, y=0.008, ha="left", va="bottom")
-    fig.subplots_adjust(left=0.01, right=0.99, top=0.9, bottom=0.1, wspace=0.05)
+    fig.subplots_adjust(left=0.01, right=0.99, top=0.9, bottom=0.11, wspace=0.05)
     out = ROOT / "docs" / "img" / "control_and_finetune_1667.png"
     fig.savefig(out, dpi=110)
     print("wrote", out.relative_to(ROOT), f"strip {h}x{w} px")

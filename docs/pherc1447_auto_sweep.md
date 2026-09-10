@@ -49,7 +49,8 @@ crosses the sheet at an angle. Two consequences for the scoring:
 So this is a weaker negative than the one on the three pre-rendered segments:
 same models, same answer, but on meshes that a better segmentation would
 replace. Together the two runs cover fourteen of the fifteen named segments of
-the scroll at three depths, two seeds, both directions; the fifteenth, the
+the scroll with two seeds and both directions, at three depths except on the
+pre-rendered 235910 and 034159 (default depth only); the fifteenth, the
 `z_dbg_gen_00320` surface volume, is not yet run.
 
 ## Reproducing

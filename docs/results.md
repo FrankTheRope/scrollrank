@@ -7,7 +7,8 @@ repository run on public Vesuvius Challenge data.*
 ## What the tool is
 
 ScrollScout does not detect letters. It measures whether an ink prediction is
-**geometrically credible as writing**, and ranks 4 cm² windows accordingly, so
+**geometrically credible as writing**, and ranks windows accordingly (4 cm² by
+default; 10 mm windows in the September 2026 experiments), so
 that a human — or a GPU budget — is spent on the most promising regions first.
 CPU-only, no training, classical signal processing on top of the public
 `ink_9um` models.
@@ -105,11 +106,16 @@ and is fetched from the public bucket by the commands shown.
 
 - **Five real segments** is a small sample. `anisotropy` earns its place on a
   0.89-vs-0.61 gap that one more scroll could erase.
-- **PHerc0139, PHerc1447, PHerc0800 and PHerc1203** have been examined this way —
-  every eligible scroll that has public segments. The other ten have none.
-- The PHerc1447 negative concerns **three segments out of fifteen**, one depth
-  window, two seeds, one checkpoint. It does not say the scroll has no ink — it
+- **PHerc1447, PHerc0800 and PHerc1203** — every eligible scroll that has public
+  segments — have been examined this way; the other ten have none. PHerc0139
+  (not eligible, text already found) is the text reference.
+- The PHerc1447 negative covers **14 of its 15 named segments** (three depth
+  windows on 12, the default window on the pre-rendered 235910 and 034159), two
+  seeds, one checkpoint, plus the team's predictions on 22 raw meshes; the eleven
+  locally rendered meshes are poor. It does not say the scroll has no ink — it
   says these models, on these segments, show none.
+- Every official-label number on PHerc1667 rests on one 0.29 cm² strip (about
+  one and a half letters) and one seed per configuration.
 - `line_periodicity` needs several consecutive lines inside a window, so
   partially recovered text and sparse annotations are underestimated. On the
   hand-made labels the score drops to 0.22–0.53 for exactly this reason.
