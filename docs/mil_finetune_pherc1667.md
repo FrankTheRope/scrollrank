@@ -44,7 +44,7 @@ cells), fixed in two rounds and re-verified. Kaggle cells:
 | baseline (this pipeline) | **0.7714** | **0.7623** | 0 | 0.610 | not trained |
 | `mil_free` | 0.7377 | 0.7467 | **−0.034** / −0.016 | 0.577 | 400 steps |
 | `mil_oracle` | 0.7547 | 0.7598 | −0.017 / −0.003 | 0.576 | 400 steps |
-| `supervised` | **0.7909** | **0.7855** | **+0.020** / +0.023 | 0.611 | 400 steps |
+| `supervised` (trained on the canon prediction) | 0.7909 | 0.7855 | +0.020 / +0.023 vs canon; **−0.015 vs official labels** | 0.611 | 400 steps |
 
 1. **The pipeline is exact.** The baseline arm reproduces the published map to
    four decimals on the T4 (gap 1.4 × 10⁻⁵), so every delta below is a real effect of training.
@@ -52,15 +52,48 @@ cells), fixed in two rounds and re-verified. Kaggle cells:
    loses 3.4 points, the oracle arm 1.7. The thing the loss was meant to teach
    got worse too: row-vs-interline separation on the test half drops from 0.610
    to 0.577.
-3. **The machinery can improve the model.** With real labels on the same 13 cm²
-   the same fine-tuning gains 2 points (0.771 → 0.791). What fails is the
-   signal, not the optimisation.
+3. ~~The machinery can improve the model: with real labels the same fine-tuning
+   gains 2 points (0.771 → 0.791).~~ Withdrawn: those "labels" were the canon
+   prediction, and against the official labels the same arm loses 1.5 points
+   (see the next section).
 4. **The guards behaved correctly** — and that exposes their limit. No clip, no
    rollback, every agreement dip correctly read as monitor noise (e.g.
    agreement 0.922, gap 0.028 against a bootstrap spread of 0.046). But the
    truth diagnostic on the held-out strip, which no guard reads, fell from 0.58
    to 0.51 over the `mil_free` run while every truth-free signal stayed green.
    On an unread scroll this degradation would have been invisible.
+
+## Against the official ink labels (correction, 10 September 2026)
+
+Every number above and below this section scores the maps against the team's
+published `canon` **prediction** of w028, and the `supervised` arm was trained
+on that same prediction (≥ 128), not on human labels. The Challenge asks
+ink-detection work to be evaluated on its public `ink-labels` (2026-07)
+dataset, which has w028. Aligned to the crop (sharp interior optimum, see
+`docs/experiments/eval_official_labels_1667.py`), its validation region covers
+11.2 % of the held-out half and none of the training half: 314 804 pixels,
+23.8 % ink. Same pixels, two references:
+
+| map | vs official labels | vs canon prediction |
+|---|---|---|
+| canon prediction itself | 0.930 | — |
+| baseline (public `ink_9um`) | **0.886** | 0.816 |
+| `supervised` (trained on the canon prediction) | **0.871 (−0.015)** | 0.822 (+0.006) |
+| `mil_free`, with distillation | 0.845 (−0.041) | 0.775 |
+| `mil_free`, without | 0.800 (−0.086) | 0.738 |
+| `mil_oracle`, with / without distillation | 0.841 / 0.843 | 0.778 / 0.782 |
+
+**The "+0.020 with labels" result does not survive.** On the same pixels, the
+arm trained on the canon prediction moves slightly toward it (+0.006) and
+away from the official labels (−0.015). The canon model marks 35.6 % of these
+pixels as ink where the official labels mark 23.8 %; fine-tuning taught
+`ink_9um` to imitate that bias, not to see ink better. This experiment never
+had human labels in training, so it says nothing about whether a few cm² of
+them would help. What it does show is the same trap as the guard in the next
+section: **optimise toward a reference and you will measure a gain against it.**
+
+**The geometry result survives and strengthens.** Every MIL configuration
+loses 4 to 9 points against the official labels.
 
 ## The confound test: removing the distillation anchor
 
@@ -80,7 +113,7 @@ identical.
 | `mil_free` | L2-SP only | **0.7096** | 0.7249 | 0.555 | guard fired at step 125 → rolled back to pristine, lr × 0.3, then 275 more steps |
 | `mil_oracle` | L2-SP + distillation | 0.7547 | 0.7598 | 0.576 | 400 steps |
 | `mil_oracle` | L2-SP only | 0.7600 | 0.7623 | 0.583 | guard fired twice → **stopped at step 175**, scoring step 25 |
-| `supervised` | L2-SP (run 1; distillation is off for this arm) | **0.7909** | **0.7855** | 0.611 | 400 steps |
+| `supervised` (on canon prediction) | L2-SP (run 1; distillation is off for this arm) | 0.7909 | 0.7855 | 0.611 | 400 steps |
 
 **The hypothesis was wrong.** Without the distillation anchor the truth-free arm
 degrades twice as much (−0.062 instead of −0.034), and the oracle arm is stopped
@@ -95,17 +128,19 @@ would have let that loss fall faster; it did not.
 
 1. **Writing geometry, used as the only supervision, does not improve a
    pre-trained ink detector on a new scroll — it degrades it.** Four MIL
-   configurations (two band sources × two anchors), all below the baseline;
-   the one arm with true labels, above it. The same result as the from-scratch
+   configurations (two band sources × two anchors), all below the baseline,
+   against the canon prediction and against the official labels alike. The same result as the from-scratch
    test, now from the strongest starting point available. The positive term
    (top 30 % of each row band pushed to 1) is self-referential: with 43-48 % of
    row-band pixels actually ink, it reinforces the detector's own ranking,
    errors included, and the interline negatives are too coarse to correct it.
    The idea is closed with a measurement.
-2. **A few cm² of true labels do improve the public model on a new scroll**
-   (+0.020, 13 cm², 400 steps, 3 min on a T4). Not new as a principle — it is
-   why every "first letters" on a new scroll came from scroll-specific labels —
-   but measured here with a verified pipeline and an honest baseline.
+2. **Fine-tuning toward another model's predictions moves toward that model, not
+   toward the ink.** Trained on the canon prediction, `ink_9um` agrees a little
+   more with canon and less with the official labels (−0.015). The earlier claim
+   that 13 cm² of labels improve the public model rested on scoring against the
+   training reference; it is withdrawn. Whether a few cm² of *human* labels help
+   is not tested here.
 3. **A truth-free guard is only as good as its independence from the loss.**
    In the first run the guard measured teacher/student agreement on interline
    pixels, and the distillation term enforced exactly that agreement — so the
@@ -164,15 +199,15 @@ So the failure has a measured mechanism, not a guessed one: noisy negatives,
 concentrated outside the row bands, plus indiscriminate high-frequency gain in
 the fine decoder. The one variant left untested would train only the head (no
 fine-decoder texture) on the central core of each interline gap (fewer
-contaminated negatives). Its ceiling is bounded by what 13 cm² of true labels
-achieve (+0.020), and the positive term would still be self-referential; it is
-not worth a run.
+contaminated negatives). The positive term would still be self-referential,
+and no arm in this study beat the untouched public model against the official
+labels; it is not worth a run.
 
 ## Caveats
 
 - One seed per configuration, one crop, one segment, 400 steps. The direction
   is consistent across all four MIL runs (all below baseline) and the one
   supervised run (above); the size of each gap is single-seed.
-- The truth is itself a model's prediction, not a papyrologist's annotation.
+- The main tables score against the canon prediction; the official-label table above covers only the 11 % of the held-out half that the ink-labels dataset annotates.
 - The input is a 2.4 µm ESRF volume resampled to 9.6 µm, not a native 9 µm
   scan.

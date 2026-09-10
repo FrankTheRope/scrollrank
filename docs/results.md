@@ -16,7 +16,7 @@ CPU-only, no training, classical signal processing on top of the public
 
 | claim | number | where |
 |---|---|---|
-| Separation, text vs papyrus (score p95) | **1.00** vs **0.15–0.30** | [feature_selection](feature_selection.md) |
+| Separation, text vs papyrus (score p95, v0.8) | **1.00** vs **0.11–0.26** | [feature_selection](feature_selection.md), `docs/experiments/separation.py` |
 | Same, with predictions on **both** sides | **0.97–0.99** vs **0.36–0.64** | [pherc1447_predictions](pherc1447_predictions.md) |
 | Ranking quality vs random (AP, w035) | **0.64** vs **0.37** | [validation_w035](validation_w035.md) |
 | Run-to-run agreement, text present (two seeds) | **0.78** Spearman | [pherc1447_predictions](pherc1447_predictions.md) |
@@ -26,9 +26,9 @@ CPU-only, no training, classical signal processing on top of the public
 | Cross-model agreement, PHerc1447 raw segments (22 segments, `gp`/`s5`/`tracer_ft`) | median **0.15**, max **0.39** | [screening_pherc1447_raw](screening_pherc1447_raw.md) |
 | `ink_9um` depth sweep on 11 locally rendered PHerc1447 segments (3 depths, 2 seeds, 3 angles) | **0 windows above 0.6** in 393 scorings | [pherc1447_auto_sweep](pherc1447_auto_sweep.md) |
 | `ink_9um` on all 22 PHerc1203 segments, rendered locally at 9.362 µm (3 depths, 2 seeds, 3 angles) | seed Spearman median **0.15**; 10 seed-supported windows, all fibre-aligned, none letter-like by eye | [pherc1203_predictions](pherc1203_predictions.md) |
-| **Positive control**: `ink_9um` on a text-dense crop of PHerc1667 (known text, 2.4 µm volume resampled to 9.6 µm) | pixel AUC vs published letters **0.76** forward, ~0.5 in reversed depth order: partial transfer, no glyphs, not depth-flip invariant | [positive_control_pherc1667](positive_control_pherc1667.md) |
-| Geometry-only training (MIL from row/interline bands) vs true labels vs `ink_9um`, same crop | **0.55** / 0.66 / 0.77 pixel AUC: geometry alone teaches little at 13 cm²; both arms data-starved | [mil_pherc1667](mil_pherc1667.md) |
-| Fine-tuning `ink_9um` itself: geometry-only (2 anchors) / oracle geometry / true labels, same crop | **0.710-0.738** / 0.755-0.760 / **0.791** vs 0.771 baseline: geometry degrades it in all 4 configurations, labels improve it; idea closed | [mil_finetune_pherc1667](mil_finetune_pherc1667.md) |
+| **Positive control**: `ink_9um` on a text-dense crop of PHerc1667 (known text, 2.4 µm volume resampled to 9.6 µm) | vs the **official ink labels** (ink-labels 2026-07): **0.886** forward, 0.689 reversed depth order (vs the canon prediction: 0.76 / ~0.5); no legible glyphs, not depth-flip invariant | [positive_control_pherc1667](positive_control_pherc1667.md) |
+| Geometry-only training from scratch (MIL) vs training on the canon prediction vs `ink_9um`, same crop | vs official labels **0.51** / 0.68 / 0.89 (vs canon 0.55 / 0.66 / 0.77): geometry alone teaches nothing measurable at 13 cm² | [mil_pherc1667](mil_pherc1667.md) |
+| Fine-tuning `ink_9um` itself: geometry-only / oracle geometry / on the canon prediction, same crop | vs official labels **0.800-0.845** / 0.841-0.843 / 0.871 vs **0.886** baseline: every arm is worse than the untouched model; geometry idea closed | [mil_finetune_pherc1667](mil_finetune_pherc1667.md) |
 
 **Operating threshold:** above 0.6 on a prediction is a candidate; below 0.5 is
 background. A candidate seen by only one run is not yet a finding: it goes to a
@@ -125,7 +125,7 @@ and is fetched from the public bucket by the commands shown.
 - [`pherc1203_predictions.md`](pherc1203_predictions.md) — PHerc1203, 22 good meshes at the model's native resolution: no text; rotation to ±45° multiplies the fibre false positive and seed agreement does not defend against it
 - [`positive_control_pherc1667.md`](positive_control_pherc1667.md) — the control that was missing: on a scroll read in full, `ink_9um` localises the known text (pixel AUC 0.76) without drawing letters, and only in one depth order (a property of the model, not of the sheet); window rankings were the wrong instrument for this
 - [`mil_pherc1667.md`](mil_pherc1667.md) — can writing geometry (rows, interlinear gaps) teach a network what ink looks like? First test: weak signal, overfits at this scale; next is scale and geometry-guided fine-tuning of `ink_9um`
-- [`mil_finetune_pherc1667.md`](mil_finetune_pherc1667.md) — the same idea applied as fine-tuning of the public model: every geometry-only configuration degrades it (−0.011 to −0.062) while 13 cm² of true labels improve it (+0.020); and a guard that the loss optimises is blind by construction
+- [`mil_finetune_pherc1667.md`](mil_finetune_pherc1667.md) — the same idea applied as fine-tuning of the public model: every configuration degrades it against the official labels; an earlier "+0.020 with labels" came from scoring against the training reference and is withdrawn; a guard that the loss optimises is blind by construction
 - [`validation_w035.md`](validation_w035.md) — validation on real predictions of a known-text segment
 - [`baseline_pherc1447.md`](baseline_pherc1447.md) — the raw-render noise floor and the false-positive modes
 - [`GPU_INFERENZA.md`](GPU_INFERENZA.md) — running the GPU half on a rented or free machine

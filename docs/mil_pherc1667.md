@@ -44,7 +44,7 @@ run on a Kaggle T4 in 8.5 min); data: `docs/experiments/build_mil_1667.py`.
 | map | AUC all | AUC within rows | row-vs-interline AUC on the test half |
 |---|---|---|---|
 | `ink_9um` (public, scroll-trained) | **0.771** | 0.762 | 0.61 |
-| supervised (true labels, this crop) | 0.662 | 0.609 | 0.56 |
+| supervised (on the canon prediction, this crop) | 0.662 | 0.609 | 0.56 |
 | mil_oracle | 0.537 | 0.532 | 0.51 |
 | mil_free | 0.552 | 0.533 | 0.56 |
 
@@ -60,16 +60,23 @@ Three things the numbers say.
    network memorised the texture of the specific training rows and it did
    not transfer to new rows 14 mm away. With 13 cm² of training area, MIL
    overfits before it generalises.
-3. **The supervised arm is data-starved too.** With perfect labels on the same
-   13 cm², the same network reaches 0.66 — below the 0.77 of a model trained
-   on a full scroll. The ceiling of this experiment is set by area, not by
+3. **The supervised arm is data-starved too.** Trained on the canon prediction
+   over the same 13 cm², the same network reaches 0.66 — below the 0.77 of a
+   model trained on a full scroll. The ceiling of this experiment is set by area, not by
    labels; the MIL result must be read against 0.66, not 0.77.
+
+**Against the official labels** (public `ink-labels` 2026-07, validation
+region, 11.2 % of the held-out half; `docs/experiments/eval_official_labels_1667.py`):
+supervised 0.678, `mil_oracle` 0.513, `mil_free` 0.509, public `ink_9um` 0.886.
+The MIL arms are at chance. Note that "supervised" here means trained on the
+canon *prediction*, not on human labels.
 
 ## Verdict, and what would change it
 
-The idea is not refuted in principle — the negatives-from-interlines signal
-exists (0.55 > 0.50, reproduced with two different band sources) — but in its
-minimal form and at this scale it is far from useful. Two changes are worth
+Against the canon prediction the negatives-from-interlines signal looked
+marginally present (0.55 > 0.50, with two different band sources); against the
+official labels both MIL arms are at chance (0.51). In its minimal form and at
+this scale the idea gives nothing measurable. Two changes are worth
 the next experiment, in this order:
 
 - **Scale.** All 19 segments of PHerc1667 with published predictions
