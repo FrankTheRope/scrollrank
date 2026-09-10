@@ -53,10 +53,21 @@ published model draws letters? — the answer is a partial yes:
 The forward predictions are blotchy and blurred, not letters, but the blotches
 sit where the letters are. `ink_9um` transfers to PHerc1667 **partially**:
 enough to localise ink at the 0.1 mm scale, not enough to draw a glyph. The
-reverse direction is at chance in every run — the model sees nothing from the
-wrong face of the sheet — which makes direction asymmetry a cheap and reliable
-sign of a written side (on PHerc1447 and PHerc1203 forward and reverse were
-indistinguishable).
+reverse direction is near chance in every run (0.49-0.55).
+
+*Correction (10 September 2026).* An earlier version of this page read the
+reverse runs as "the model sees nothing from the wrong face of the sheet" and
+called direction asymmetry "a cheap and reliable sign of a written side". That
+is wrong. villa's reverse direction is not the other face of the sheet: it
+feeds the *same* 17 slices in the opposite depth order. The asymmetry therefore
+says only that `ink_9um` is not invariant to a depth flip — it learned ink at a
+particular position in the stack — and nothing about which side carries
+writing. A model trained with depth-flip augmentation, which is what one would
+want (point made by the segmentation team on Discord), should see the ink in
+both orders, and the asymmetry would disappear with it. What remains useful is
+practical: with the public checkpoint, check both orders on a new segment and
+keep the one the model can read; on PHerc1447 and PHerc1203 neither order was
+readable.
 
 ScrollScout's own score would have been fooled either way — 0.74 at the right
 pitch on blotches — one more instance of the band-and-blotch false positive,
@@ -68,7 +79,7 @@ measures shared structure, not ink.
 
 On the one test with known text on another scroll, `ink_9um` transfers
 partially: pixel AUC 0.76 where the published model puts letters, but no
-legible glyphs, and nothing from the verso. Read the negatives on PHerc1447,
+legible glyphs, and only in one depth order. Read the negatives on PHerc1447,
 PHerc0800 and PHerc1203 accordingly: a blurred, weakened version of the ink
 signal may be present in those predictions without ever forming rows that
 ScrollScout or the eye can recognise — *the model sees dimly*, not *there is
