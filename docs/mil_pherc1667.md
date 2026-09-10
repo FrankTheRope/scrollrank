@@ -58,10 +58,10 @@ Three things the numbers say.
    chance (0.51-0.56; the row profile explains 5 % of their variance),
    while their training loss was low (negatives 0.07, positives 0.06). So the
    network memorised the texture of the specific training rows and it did
-   not transfer to new rows 14 mm away. With 13 cm² of training area, MIL
+   not transfer to new rows 14 mm away. With 2.6 cm² of training area (the 13.4 × 19.2 mm left half), MIL
    overfits before it generalises.
 3. **The supervised arm is data-starved too.** Trained on the canon prediction
-   over the same 13 cm², the same network reaches 0.66 — below the 0.77 of a
+   over the same 2.6 cm², the same network reaches 0.66 — below the 0.77 of a
    model trained on a full scroll. The ceiling of this experiment is set by area, not by
    labels; the MIL result must be read against 0.66, not 0.77.
 

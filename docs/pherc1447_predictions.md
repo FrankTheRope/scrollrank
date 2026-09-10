@@ -113,7 +113,7 @@ artefact, not enough to support a finding.
 
 **In the three pre-rendered `auto_grown` segments of PHerc. 1447, the public
 `ink_9um` models show no detectable text.** The finding is bounded: it concerns
-three segments out of sixteen, one depth window, two seeds, one checkpoint, and
+three segments out of fifteen, one depth window, two seeds, one checkpoint, and
 the models' own generalisation to this scroll — which the Challenge lists as an
 open problem. It does not say the scroll has no ink.
 

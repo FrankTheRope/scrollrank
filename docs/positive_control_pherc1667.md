@@ -1,6 +1,6 @@
 # Positive control: does `ink_9um` find text that is known to be there?
 
-Every negative in this repository — PHerc1447 (16 + 22 segments), PHerc0800
+Every negative in this repository — PHerc1447 (14 of its 15 named segments + 22 raw meshes), PHerc0800
 (6), PHerc1203 (22) — was obtained with the public `ink_9um` models, trained
 on PHerc0139. None of it distinguishes "no ink" from "no ink these models can
 see". The control that separates the two is a scroll other than PHerc0139
@@ -62,9 +62,11 @@ is wrong. villa's reverse direction is not the other face of the sheet: it
 feeds the *same* 17 slices in the opposite depth order. The asymmetry therefore
 says only that `ink_9um` is not invariant to a depth flip — it learned ink at a
 particular position in the stack — and nothing about which side carries
-writing. A model trained with depth-flip augmentation, which is what one would
-want (point made by the segmentation team on Discord), should see the ink in
-both orders, and the asymmetry would disappear with it. What remains useful is
+writing. A model trained with depth-flip augmentation should see the ink in both
+orders, and the asymmetry would disappear with it. The re-check of villa's code
+was prompted by a Discord reply from a segmentation-team member: "ideally you
+could more or less freely rotate/warp/flip the image and the model would see
+ink anyways". What remains useful is
 practical: with the public checkpoint, check both orders on a new segment and
 keep the one the model can read; on PHerc1447 and PHerc1203 neither order was
 readable.
@@ -83,11 +85,14 @@ itself 0.930 (`docs/experiments/eval_official_labels_1667.py`). On the annotated
 part of this segment the public model transfers better than the canon-based
 0.76 suggested; it still draws no legible glyph at 9.6 µm.
 
+![official labels, canon prediction, ink_9um in both depth orders and two fine-tuned variants, on the annotated strip](img/control_and_finetune_1667.png)
+
 ## What it means for the negatives
 
 On the one test with known text on another scroll, `ink_9um` transfers
-partially: pixel AUC 0.76 where the published model puts letters, but no
-legible glyphs, and only in one depth order. Read the negatives on PHerc1447,
+partially: pixel AUC 0.71-0.76 against the published prediction and 0.886 on
+the officially labelled part, but no legible glyphs, and only in one depth
+order. Read the negatives on PHerc1447,
 PHerc0800 and PHerc1203 accordingly: a blurred, weakened version of the ink
 signal may be present in those predictions without ever forming rows that
 ScrollScout or the eye can recognise — *the model sees dimly*, not *there is

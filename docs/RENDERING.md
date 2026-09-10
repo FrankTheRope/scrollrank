@@ -1,8 +1,17 @@
 # Rendering a tifxyz mesh without building VC3D
 
 `vc_render_tifxyz` builds on its own, without Ceres and without the GUI. Verified
-on Ubuntu 24 (WSL): the render of PHerc1447 segment 235910 correlates at 0.998
-with the official surface volume.
+on Ubuntu 24 (WSL) against the official surface volume of PHerc1447 segment
+235910: the central slice correlates at 0.998.
+
+**The depth order comes out reversed.** With the command below, local slice *i*
+matches official slice *30 − i* (r = 0.99 at every depth; same-index r ≈ 0.0
+except at the centre). So villa's `--direction forward` on a local render is the
+official volume's *reverse*, and vice versa. Every sweep in this repository ran
+both directions and depth windows symmetric about the centre, so no result
+depends on it, but a single-direction run on a local render reads the stack
+upside down. Check the order against an official surface volume before trusting
+one direction.
 
 ## Build (~20 min)
 

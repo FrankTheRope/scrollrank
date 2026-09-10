@@ -1,7 +1,7 @@
 # PHerc. 1447 raw segments: screening the team's published ink predictions
 
 The bucket holds 37 raw meshes for PHerc1447 under `segments/raw/`. Twenty-two
-of them (`z_dbg_gen_*`, November 2025) come with ink predictions the Challenge
+of them (`z_dbg_gen_*`, November 2025; two are versions of 00316) come with ink predictions the Challenge
 team already ran, as full-resolution JPG previews (8.64 µm, 1:1 with the
 volume): three models — `gp`, `s5`, `tracer_ft` — in both layer directions.
 That is 132 predictions on an eligible scroll that nobody had screened, and

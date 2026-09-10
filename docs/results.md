@@ -16,7 +16,7 @@ CPU-only, no training, classical signal processing on top of the public
 
 | claim | number | where |
 |---|---|---|
-| Separation, text vs papyrus (score p95, v0.8) | **1.00** vs **0.11–0.26** | [feature_selection](feature_selection.md), `docs/experiments/separation.py` |
+| Separation, text **predictions** vs **raw papyrus renders** (score p95, v0.8) | **1.00** vs **0.10–0.26** (two image types: see the next row for the fair test) | [feature_selection](feature_selection.md), `docs/experiments/separation.py` |
 | Same, with predictions on **both** sides | **0.97–0.99** vs **0.36–0.64** | [pherc1447_predictions](pherc1447_predictions.md) |
 | Ranking quality vs random (AP, w035) | **0.64** vs **0.37** | [validation_w035](validation_w035.md) |
 | Run-to-run agreement, text present (two seeds) | **0.78** Spearman | [pherc1447_predictions](pherc1447_predictions.md) |
@@ -27,8 +27,8 @@ CPU-only, no training, classical signal processing on top of the public
 | `ink_9um` depth sweep on 11 locally rendered PHerc1447 segments (3 depths, 2 seeds, 3 angles) | **0 windows above 0.6** in 393 scorings | [pherc1447_auto_sweep](pherc1447_auto_sweep.md) |
 | `ink_9um` on all 22 PHerc1203 segments, rendered locally at 9.362 µm (3 depths, 2 seeds, 3 angles) | seed Spearman median **0.15**; 10 seed-supported windows, all fibre-aligned, none letter-like by eye | [pherc1203_predictions](pherc1203_predictions.md) |
 | **Positive control**: `ink_9um` on a text-dense crop of PHerc1667 (known text, 2.4 µm volume resampled to 9.6 µm) | vs the **official ink labels** (ink-labels 2026-07): **0.886** forward, 0.689 reversed depth order (vs the canon prediction: 0.76 / ~0.5); no legible glyphs, not depth-flip invariant | [positive_control_pherc1667](positive_control_pherc1667.md) |
-| Geometry-only training from scratch (MIL) vs training on the canon prediction vs `ink_9um`, same crop | vs official labels **0.51** / 0.68 / 0.89 (vs canon 0.55 / 0.66 / 0.77): geometry alone teaches nothing measurable at 13 cm² | [mil_pherc1667](mil_pherc1667.md) |
-| Fine-tuning `ink_9um` itself: geometry-only / oracle geometry / on the canon prediction, same crop | vs official labels **0.800-0.845** / 0.841-0.843 / 0.871 vs **0.886** baseline: every arm is worse than the untouched model; geometry idea closed | [mil_finetune_pherc1667](mil_finetune_pherc1667.md) |
+| Geometry-only training from scratch (MIL) vs training on the canon prediction vs `ink_9um`, same crop | vs official labels **0.51** / 0.68 / 0.89 (vs canon 0.55 / 0.66 / 0.77): geometry alone teaches nothing measurable at 2.6 cm² | [mil_pherc1667](mil_pherc1667.md) |
+| Fine-tuning `ink_9um` itself: geometry-only / oracle geometry / on the canon prediction, same crop | vs official labels **0.800-0.845** / 0.841-0.843 / 0.871 vs **0.886** baseline: every arm is worse than the untouched model; geometry idea negative on this crop | [mil_finetune_pherc1667](mil_finetune_pherc1667.md) |
 
 **Operating threshold:** above 0.6 on a prediction is a candidate; below 0.5 is
 background. A candidate seen by only one run is not yet a finding: it goes to a
@@ -107,7 +107,7 @@ and is fetched from the public bucket by the commands shown.
   0.89-vs-0.61 gap that one more scroll could erase.
 - **PHerc0139, PHerc1447, PHerc0800 and PHerc1203** have been examined this way —
   every eligible scroll that has public segments. The other ten have none.
-- The PHerc1447 negative concerns **three segments out of sixteen**, one depth
+- The PHerc1447 negative concerns **three segments out of fifteen**, one depth
   window, two seeds, one checkpoint. It does not say the scroll has no ink — it
   says these models, on these segments, show none.
 - `line_periodicity` needs several consecutive lines inside a window, so

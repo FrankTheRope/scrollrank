@@ -72,9 +72,9 @@ Together with [pherc1447_predictions](pherc1447_predictions.md),
 [pherc1447_auto_sweep](pherc1447_auto_sweep.md),
 [screening_pherc1447_raw](screening_pherc1447_raw.md) and
 [pherc0800_predictions](pherc0800_predictions.md), every public segment of
-the three eligible scrolls that have any has now been run: 16 + 22 raw
-segments of PHerc1447 (four model families), 6 of PHerc0800, 22 of
-PHerc1203. Not one window where independent models agree on writing-like
+the three eligible scrolls that have any has now been run but one (the
+PHerc1447 `z_dbg_gen_00320` surface volume): 14 of 15 named + 22 raw meshes of
+PHerc1447 (four model families), 6 of PHerc0800, 22 of PHerc1203. Not one window where independent models agree on writing-like
 structure and the eye confirms it. About four hours of free GPU and three of
 local rendering.
 

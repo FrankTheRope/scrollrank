@@ -1,7 +1,7 @@
-# Geometry-guided fine-tuning of `ink_9um`: closed with a measurement
+# Geometry-guided fine-tuning of `ink_9um`: negative on one crop, mechanism measured
 
 The [from-scratch MIL test](mil_pherc1667.md) showed that writing geometry
-alone teaches a small network very little on 13 cm². The obvious rescue was to
+alone teaches a small network very little on 2.6 cm². The obvious rescue was to
 start from a detector that already half-works on the new scroll: take the
 public `ink_9um` checkpoint (pixel AUC 0.771 on this crop, see the
 [positive control](positive_control_pherc1667.md)) and fine-tune it with the
@@ -40,14 +40,16 @@ cells), fixed in two rounds and re-verified. Kaggle cells:
 
 | arm | AUC all | AUC within rows | Δ vs baseline | row-vs-interline AUC | status |
 |---|---|---|---|---|---|
-| published `ink_9um` map | 0.7714 | 0.7623 | — | 0.610 | — |
+| `ink_9um` map from villa's `infer.py` (control run) | 0.7714 | 0.7623 | — | 0.610 | — |
 | baseline (this pipeline) | **0.7714** | **0.7623** | 0 | 0.610 | not trained |
 | `mil_free` | 0.7377 | 0.7467 | **−0.034** / −0.016 | 0.577 | 400 steps |
 | `mil_oracle` | 0.7547 | 0.7598 | −0.017 / −0.003 | 0.576 | 400 steps |
 | `supervised` (trained on the canon prediction) | 0.7909 | 0.7855 | +0.020 / +0.023 vs canon; **−0.015 vs official labels** | 0.611 | 400 steps |
 
-1. **The pipeline is exact.** The baseline arm reproduces the published map to
-   four decimals on the T4 (gap 1.4 × 10⁻⁵), so every delta below is a real effect of training.
+1. **The pipeline is exact.** The baseline arm reproduces the map that villa's
+   own `infer.py` produced for the positive control to four decimals of AUC on
+   the T4 (gap 1.4 × 10⁻⁵), so every delta below comes from training, not from
+   the pipeline.
 2. **Geometry-guided fine-tuning makes the detector worse.** The truth-free arm
    loses 3.4 points, the oracle arm 1.7. The thing the loss was meant to teach
    got worse too: row-vs-interline separation on the test half drops from 0.610
@@ -134,22 +136,25 @@ would have let that loss fall faster; it did not.
    (top 30 % of each row band pushed to 1) is self-referential: with 43-48 % of
    row-band pixels actually ink, it reinforces the detector's own ranking,
    errors included, and the interline negatives are too coarse to correct it.
-   The idea is closed with a measurement.
+   On this crop the idea is negative; more training area was not tried.
 2. **Fine-tuning toward another model's predictions moves toward that model, not
    toward the ink.** Trained on the canon prediction, `ink_9um` agrees a little
    more with canon and less with the official labels (−0.015). The earlier claim
-   that 13 cm² of labels improve the public model rested on scoring against the
+   that about 2 cm² of labels (the 11.0 × 19.2 mm training strip) improve the public model rested on scoring against the
    training reference; it is withdrawn. Whether a few cm² of *human* labels help
    is not tested here.
 3. **A truth-free guard is only as good as its independence from the loss.**
    In the first run the guard measured teacher/student agreement on interline
    pixels, and the distillation term enforced exactly that agreement — so the
    guard was blind by construction and stayed green while the truth diagnostic
-   fell from 0.58 to 0.51. With distillation removed, the same guard, on
-   truth-free signals alone, caught the degradation in both arms and stopped
-   one of them. Any self-supervised pipeline run on an unread scroll inherits
-   this pitfall: a monitor that the objective optimises cannot tell you the
-   objective is wrong.
+   fell from 0.58 to 0.51. With distillation removed, the same guard fired in
+   both geometry arms. In the truth-free arm it fired once and rolled training
+   back to the pristine weights, but the resumed run still ended as the worst
+   model of the study (0.710); only the oracle-band arm, whose guard reads
+   truth-derived bands, was stopped. Independence let the guard *see* the
+   degradation; it did not prevent it. Any self-supervised pipeline run on an
+   unread scroll inherits the first half of this lesson: a monitor that the
+   objective optimises cannot tell you the objective is wrong.
 
 ## Where the loss comes from
 
@@ -206,8 +211,9 @@ labels; it is not worth a run.
 ## Caveats
 
 - One seed per configuration, one crop, one segment, 400 steps. The direction
-  is consistent across all four MIL runs (all below baseline) and the one
-  supervised run (above); the size of each gap is single-seed.
+  is consistent across all four MIL runs (all below baseline, against both
+  references); the supervised run is above against the canon prediction and
+  below against the official labels. The size of each gap is single-seed.
 - The main tables score against the canon prediction; the official-label table above covers only the 11 % of the held-out half that the ink-labels dataset annotates.
 - The input is a 2.4 µm ESRF volume resampled to 9.6 µm, not a native 9 µm
   scan.

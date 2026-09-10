@@ -1,6 +1,6 @@
 # PHerc. 1447, the eleven unrendered meshes: rendered locally, no text
 
-The sixteen public segments of PHerc1447 include eleven `auto_grown` meshes
+The fifteen named public segments of PHerc1447 include eleven `auto_grown` meshes
 from May 2025 with no surface volume. They were rendered locally with
 `vc_render_tifxyz` (docs/RENDERING.md; 5-15 min each, 87-222 MB, seven
 renderer processes in parallel are network-bound and safe), run through
@@ -48,9 +48,9 @@ crosses the sheet at an angle. Two consequences for the scoring:
 
 So this is a weaker negative than the one on the three pre-rendered segments:
 same models, same answer, but on meshes that a better segmentation would
-replace. Together the two runs cover all sixteen public segments of the
-scroll (plus the `z_dbg_gen_00320` surface volume, not yet run), at three
-depths, two seeds, both directions.
+replace. Together the two runs cover fourteen of the fifteen named segments of
+the scroll at three depths, two seeds, both directions; the fifteenth, the
+`z_dbg_gen_00320` surface volume, is not yet run.
 
 ## Reproducing
 
