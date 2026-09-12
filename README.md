@@ -1,11 +1,15 @@
 # ScrollRank
 
 > **Formerly ScrollScout** (renamed on 12 September 2026). The name clashed with
-> [vonduffen/scrollscout](https://github.com/vonduffen/scrollscout), an unrelated
-> tool for streaming scroll volumes, published on PyPI in July 2026, earlier than
+> [`scrollscout` on PyPI](https://pypi.org/project/scrollscout/) (by vonduffen), an
+> unrelated tool for streaming scroll volumes, published in July 2026, earlier than
 > this project. Old links to `github.com/FrankTheRope/scrollscout`, including the
 > September 2026 Progress Prize submission (tag `progress-2026-09b`), redirect here.
-> The command and the Python package are now `scrollrank`.
+> The command and the Python package are now `scrollrank`; in benchmark JSON the
+> main method is now `"ScrollRank (full)"`. At tags up to `progress-2026-09b`
+> (v0.4–v0.8) they are still called `scrollscout`, which is *not* the PyPI package
+> of that name: install such a tag in its own virtual environment. Some older
+> figures still show the former name (or its initials, `SS`) in their labels.
 
 **CPU-first ink prospecting for the Vesuvius Challenge.**
 Ranks 4 cm² windows of an ink-prediction image (or a raw surface render) by how
@@ -46,7 +50,9 @@ scrollrank score demo/text_tilted.tif --pixel-size-um 100 --out demo/score_text
 scrollrank score demo/noise.tif       --pixel-size-um 100 --out demo/score_noise
 ```
 
-Text windows score ≈ 0.9–1.0, blobby noise ≈ 0.1–0.3, pure stripes ≈ 0.3.
+Text windows score ≈ 1.0, blobby noise ≈ 0.1–0.25, pure stripes ≈ 0.5 and up
+to ≈ 0.9 (the v0.8 score rewards line periodicity alone, so regular stripes rank
+just below text; real papyrus fibres are the false positive to watch).
 Each run writes `heatmap.png`, `overlay.png` (top-K boxes) and `windows.json`
 (boxes in original pixels **and** millimetres, sub-scores, detected line pitch
 and tilt).

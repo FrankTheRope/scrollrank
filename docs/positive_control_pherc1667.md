@@ -26,6 +26,8 @@ wide).
 
 ![render, published prediction, and the twelve ink_9um predictions](img/control_1667_w028.png)
 
+*SS in the panel titles is the ScrollRank score (the initials of the project's former name).*
+
 | | score max | p95 | pitch | Spearman vs published | Spearman vs other seed |
 |---|---|---|---|---|---|
 | published `canon` 2.4 µm prediction | 0.737 | 0.49 | 4.9 mm | — | — |
