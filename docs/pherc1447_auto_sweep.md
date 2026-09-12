@@ -7,7 +7,7 @@ renderer processes in parallel are network-bound and safe), run through
 `ink_9um` on a free Kaggle session (docs/experiments/kaggle_ink9um_sweep.sh:
 seeds 42 and 43 on the two T4s, three depth windows 0-16 / 7-23 / 14-30,
 both directions; 131 of 132 predictions, one lost to the download), and scored
-with ScrollScout v0.8 at 0°, +45° and -45°, masked to the mesh:
+with ScrollRank v0.8 at 0°, +45° and -45°, masked to the mesh:
 
     python3 docs/experiments/sweep_pherc1447_auto.py
 

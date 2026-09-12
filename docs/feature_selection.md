@@ -1,4 +1,4 @@
-# Feature selection, measured (ScrollScout v0.6 → v0.8)
+# Feature selection, measured (ScrollRank v0.6 → v0.8)
 
 *Until v0.5 the score was a weighted geometric mean of four sub-scores with
 weights chosen by hand (1 / 4 / 1 / 1). This document reports the experiments
@@ -128,7 +128,7 @@ outside PHerc0139 / PHerc1447 has been examined this way.
 
 ## Reproducibility
 
-Code at tag `v0.6`. Saturation figures come from `scrollscout benchmark`;
-cross-segment statistics from `scrollscout benchmark-suite`; the separation
+Code at tag `v0.6`. Saturation figures come from `scrollrank benchmark`;
+cross-segment statistics from `scrollrank benchmark-suite`; the separation
 table from a five-line script over `score_image`, included as
 `docs/experiments/separation.py`.

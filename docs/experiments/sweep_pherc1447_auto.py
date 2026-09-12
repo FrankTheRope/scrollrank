@@ -31,8 +31,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from scrollscout.letterness import ScoreConfig, load_image, score_image  # noqa: E402
-from scrollscout.concordance import _spearman  # noqa: E402
+from scrollrank.letterness import ScoreConfig, load_image, score_image  # noqa: E402
+from scrollrank.concordance import _spearman  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 SCROLLS = {  # pred dir, render dir, out dir, voxel size (µm)

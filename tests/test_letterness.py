@@ -2,8 +2,8 @@
 and the detected line pitch must match the synthetic one."""
 import numpy as np
 
-from scrollscout.letterness import ScoreConfig, score_image
-from scrollscout.synth import make_text_image, make_noise_image, make_stripes_image
+from scrollrank.letterness import ScoreConfig, score_image
+from scrollrank.synth import make_text_image, make_noise_image, make_stripes_image
 
 CFG = ScoreConfig(pixel_size_um=100.0, working_um=100.0)
 
@@ -25,7 +25,7 @@ def test_ink_fraction_gates_but_does_not_rank():
     assert "anisotropy" not in cfg.weights
     assert set(cfg.weights) == {"line_periodicity"}
     # a window with implausible coverage is suppressed even with perfect geometry
-    from scrollscout.letterness import _band_score
+    from scrollrank.letterness import _band_score
     assert _band_score(0.00, *cfg.ink_band) == 0.0     # empty window is vetoed
     assert _band_score(0.70, *cfg.ink_band) == 0.0     # smear is vetoed
     assert _band_score(0.15, *cfg.ink_band) == 1.0
@@ -80,7 +80,7 @@ def _make_bench(tmpdir):
     """Prediction with 4 text patches on noise; sparse label marking only the text."""
     import tifffile
     from scipy import ndimage as ndi
-    from scrollscout.synth import make_noise_image
+    from scrollrank.synth import make_noise_image
     rng = np.random.default_rng(0)
     px, H, W = 100.0, 1200, 1200
     pred = make_noise_image(shape_mm=(120, 120), pixel_um=px, seed=7)
@@ -104,8 +104,8 @@ def _make_bench(tmpdir):
 def test_benchmark_regions_are_informative(tmp_path):
     """A metric that saturates for every ranking measures nothing. Grid regions
     must stay numerous enough that random ordering does NOT reach them all."""
-    from scrollscout.benchmark import run
-    from scrollscout.letterness import ScoreConfig
+    from scrollrank.benchmark import run
+    from scrollrank.letterness import ScoreConfig
     pp, lp = _make_bench(tmp_path)
     cfg = ScoreConfig(pixel_size_um=100.0, working_um=100.0, window_mm=10.0,
                       stride_mm=2.0, auto_mask=False)
@@ -119,13 +119,13 @@ def test_benchmark_regions_are_informative(tmp_path):
 
 
 def test_benchmark_beats_random(tmp_path):
-    from scrollscout.benchmark import run
-    from scrollscout.letterness import ScoreConfig
+    from scrollrank.benchmark import run
+    from scrollrank.letterness import ScoreConfig
     pp, lp = _make_bench(tmp_path)
     cfg = ScoreConfig(pixel_size_um=100.0, working_um=100.0, window_mm=10.0,
                       stride_mm=2.0, auto_mask=False)
     rep = run(pp, lp, cfg, tmp_path / "out")
-    full = rep["results"]["ScrollScout (full)"]
+    full = rep["results"]["ScrollRank (full)"]
     rnd = rep["results"]["baseline: casuale"]
     assert rep["positives"]["n_regions"] > 0
     # 1.5x, not 2x: dropping stroke_shape costs performance on SYNTHETIC data,
@@ -141,7 +141,7 @@ def test_benchmark_beats_random(tmp_path):
 
 def test_benchmark_detects_useless_ranking(tmp_path):
     """A benchmark that cannot fail a bad ranking is worthless: check it can."""
-    from scrollscout.benchmark import rank_metrics, nms
+    from scrollrank.benchmark import rank_metrics, nms
     import numpy as _np
     boxes = _np.array([[i * 300, 0, i * 300 + 294, 294] for i in range(20)])
     positive = _np.zeros(20, bool); positive[:4] = True
@@ -159,8 +159,8 @@ def test_benchmark_suite_paired(tmp_path):
     import json
     import tifffile
     from scipy import ndimage as ndi
-    from scrollscout.benchmark_suite import run_suite, format_suite
-    from scrollscout.synth import make_noise_image
+    from scrollrank.benchmark_suite import run_suite, format_suite
+    from scrollrank.synth import make_noise_image
     rng = np.random.default_rng(0)
     manifest = []
     for k, pitch in enumerate((5.0, 6.0, 4.5, 7.0)):
@@ -186,7 +186,7 @@ def test_benchmark_suite_paired(tmp_path):
     rep = run_suite(manifest, tmp_path / "suite", mode="predictions")
     assert rep["n_segments"] == 4 and rep["n_failed"] == 0
     agg = rep["aggregate"]
-    full = agg["ScrollScout (full)"]
+    full = agg["ScrollRank (full)"]
     rnd = agg["baseline: casuale"]
     assert full["ap_mean"] > rnd["ap_mean"]
     assert full["paired_diff_vs_full_mean"] == 0.0          # full vs itself
@@ -200,7 +200,7 @@ def test_benchmark_suite_labels_mode(tmp_path):
     """`labels` mode uses the annotation as its own prediction: an upper bound
     on the scorer under ideal detection."""
     import tifffile
-    from scrollscout.benchmark_suite import run_suite
+    from scrollrank.benchmark_suite import run_suite
     for k in range(3):
         t = make_text_image(shape_mm=(60, 60), pixel_um=100.0, line_pitch_mm=5.0, seed=k)
         tifffile.imwrite(tmp_path / f"seg{k}_inklabels.tif",
@@ -215,8 +215,8 @@ def test_concordance_separates_agreement_from_noise(tmp_path):
     """The measure must rate two runs that see the same structure far above two
     that do not — otherwise it cannot retire a candidate."""
     import tifffile
-    from scrollscout.concordance import run as run_conc, format_report
-    from scrollscout.letterness import ScoreConfig
+    from scrollrank.concordance import run as run_conc, format_report
+    from scrollrank.letterness import ScoreConfig
     base = make_text_image(seed=0, line_pitch_mm=5.0)
     rng = np.random.default_rng(1)
     # two "runs" of the same segment: same text, independent noise

@@ -30,7 +30,7 @@ misaligned pairs would have reported numbers about nothing.
 
 | ranking | AP mean | σ | diff vs full | W/L | p |
 |---|---|---|---|---|---|
-| ScrollScout (full, v0.6: periodicity 4 + anisotropy 1) | 0.397 | 0.162 | — | — | — |
+| ScrollRank (full, v0.6: periodicity 4 + anisotropy 1) | 0.397 | 0.162 | — | — | — |
 | `line_periodicity` alone | 0.397 | 0.164 | +0.001 | 4/2 | 0.44 |
 | `anisotropy` alone | 0.373 | 0.132 | −0.024 | 2/4 | 0.44 |
 | baseline: raw ink fraction | 0.329 | 0.155 | −0.068 | 3/3 | 0.56 |
@@ -55,7 +55,7 @@ is gone. **v0.8 drops it.** The score is now `line_periodicity` times the ink
 gate, and on the separation experiment this *improves* the papyrus side
 (0.190 → 0.149 at the 95th percentile) while text stays at 1.000.
 
-## Open: within a written segment, ScrollScout is not shown to beat raw ink
+## Open: within a written segment, ScrollRank is not shown to beat raw ink
 
 +0.068 over ranking by raw ink fraction, but 3 wins, 3 losses, p = 0.56. On
 this task, with these labels, the two are indistinguishable. That is the honest
@@ -71,7 +71,7 @@ a γ, in three isolated spots of a 57 × 76 mm segment, everything else black.
 ![](img/gallery_w043.png)
 ![](img/label_w043.png)
 
-*Top: the top-8 windows of w043 by ScrollScout. Bottom: the entire hand label of
+*Top: the top-8 windows of w043 by ScrollRank. Bottom: the entire hand label of
 w043. The benchmark asks the tool to rank the seven annotated letters above
 hundreds of unannotated ones that look the same.*
 
@@ -91,7 +91,7 @@ pays the same penalty — which is why the anisotropy conclusion stands.
 
 ## What this means for what the tool is
 
-The question ScrollScout answers well is **"is there text here at all?"** —
+The question ScrollRank answers well is **"is there text here at all?"** —
 between segments, text against papyrus, where periodicity separates with no
 overlap and raw ink fraction (1.000 on both classes) separates nothing. The
 question it does not answer better than a trivial baseline is **"which part of
@@ -111,7 +111,7 @@ measurements to trust.
 ```bash
 bash docs/experiments/fetch_pherc0139_predictions.sh      # ~500 MB from S3
 python3 docs/experiments/build_pherc0139_manifest.py       # pairs with ink_9um labels
-scrollscout benchmark-suite data/0139_pred/manifest6.json --mode predictions --out out/suite_0139_6
+scrollrank benchmark-suite data/0139_pred/manifest6.json --mode predictions --out out/suite_0139_6
 ```
 
 Code at tag `v0.8`. The predictions and labels are CC BY-NC 4.0 and are not

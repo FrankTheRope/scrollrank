@@ -44,7 +44,7 @@ import numpy as np
 from .benchmark import run as run_one
 from .letterness import ScoreConfig
 
-FULL = "ScrollScout (full)"
+FULL = "ScrollRank (full)"
 
 
 def _signed_rank_p(diff: np.ndarray) -> float:

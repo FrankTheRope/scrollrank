@@ -2,7 +2,7 @@
 
 Six public `auto_grown` segments (0.4-2.3 cm², 15-27 mm across) rendered locally
 with `vc_render_tifxyz` (see RENDERING.md), `ink_9um` seeds 42/43 both
-directions on free Kaggle GPU (24 predictions, 11 min), scored with ScrollScout
+directions on free Kaggle GPU (24 predictions, 11 min), scored with ScrollRank
 v0.8 at 0°, +45° and -45° because the papyrus fibres run diagonally in these
 renders. Segment 010146 (7 mm) is too small for a 10 mm window and was skipped.
 

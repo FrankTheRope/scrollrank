@@ -1,4 +1,4 @@
-# Baseline: PHerc. 1447 raw surface renders (ScrollScout)
+# Baseline: PHerc. 1447 raw surface renders (ScrollRank)
 
 *Measured 2026-09 on the three public `auto_grown` segments of PHerc1447 that
 ship with pre-rendered surface volumes (8.64 µm, 31 slices). No ink model was
@@ -11,8 +11,8 @@ predictions where text is known to exist.*
 ## Setup
 
 ```bash
-scrollscout project data/1447/<ID>_tifs --out data/1447/<ID>
-scrollscout score  data/1447/<ID>_<proj>.tif --pixel-size-um 8.64 \
+scrollrank project data/1447/<ID>_tifs --out data/1447/<ID>
+scrollrank score  data/1447/<ID>_<proj>.tif --pixel-size-um 8.64 \
                    --window-mm 10 --stride-mm 2 --top-k 3
 ```
 

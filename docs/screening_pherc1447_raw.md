@@ -9,7 +9,7 @@ none of them needs a GPU. Segment 00701 alone covers a 19 × 23 × 51 mm box.
 
     python3 docs/experiments/screen_pherc1447_raw.py     # ~7 min on 6 cores
 
-ScrollScout v0.8, 10 mm windows, 2 mm stride, auto-mask on (the JPG background
+ScrollRank v0.8, 10 mm windows, 2 mm stride, auto-mask on (the JPG background
 is exact zero outside the mesh). Per segment and direction: the three score
 grids, their pairwise Spearman (the cross-model concordance test), and every
 window above 0.6 with the value the other two models give in the same cell.

@@ -1,7 +1,7 @@
 """
 benchmark.py — quantitative evaluation of the ranking, not of a single score.
 
-ScrollScout is a triage tool: the question that matters is not "how high does
+ScrollRank is a triage tool: the question that matters is not "how high does
 the best window score" but "if a human can only look at K windows, how many of
 the windows that actually contain text do we hand them". This module answers
 that, using a segment for which the Vesuvius Challenge team has published
@@ -17,7 +17,7 @@ Outputs
 -------
 Recall@K (at the level of distinct text REGIONS, after non-maximum suppression),
 precision@K and Average Precision for
-  * the full ScrollScout score,
+  * the full ScrollRank score,
   * every leave-one-out ablation of the four sub-scores,
   * two baselines: raw ink fraction alone, and random ordering,
 plus a precision-recall curve.
@@ -297,7 +297,7 @@ def run(prediction_path: str | Path, label_path: str | Path, cfg: ScoreConfig,
 
     rankings: dict[str, np.ndarray] = {}
     full = dict(cfg.weights)
-    rankings["ScrollScout (full)"] = rank_by(windows, full)
+    rankings["ScrollRank (full)"] = rank_by(windows, full)
     voting = [k for k, v in full.items() if v > 0]
     if len(voting) > 1:                      # leave-one-out only makes sense with >1 voter
         for name in voting:
@@ -320,7 +320,7 @@ def run(prediction_path: str | Path, label_path: str | Path, cfg: ScoreConfig,
     # it reports is an artefact. Reporting saturation and the rank correlation
     # against the full score makes such rows readable instead of misleading.
     diagnostics = {"saturation": {}, "rank_corr_vs_full": {}}
-    full_order = rankings["ScrollScout (full)"]
+    full_order = rankings["ScrollRank (full)"]
     full_rank = np.empty(len(windows), dtype=np.float64)
     full_rank[full_order] = np.arange(len(windows))
     for name in SUBSCORES:
@@ -343,7 +343,7 @@ def run(prediction_path: str | Path, label_path: str | Path, cfg: ScoreConfig,
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
         fig, ax = plt.subplots(figsize=(7, 5))
-        for name in ["ScrollScout (full)", "solo line_periodicity", "solo ink_fraction",
+        for name in ["ScrollRank (full)", "solo line_periodicity", "solo ink_fraction",
                      "baseline: frazione grezza di inchiostro", "baseline: casuale"]:
             if name not in rankings:
                 continue

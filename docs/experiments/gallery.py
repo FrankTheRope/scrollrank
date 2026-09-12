@@ -6,8 +6,8 @@ import sys
 import numpy as np
 from PIL import Image, ImageDraw
 sys.path.insert(0, ".")
-from scrollscout.letterness import ScoreConfig, score_image, load_image
-from scrollscout.benchmark import nms
+from scrollrank.letterness import ScoreConfig, score_image, load_image
+from scrollrank.benchmark import nms
 
 path, px = sys.argv[1], float(sys.argv[2])
 out = sys.argv[3] if len(sys.argv) > 3 else "gallery.png"

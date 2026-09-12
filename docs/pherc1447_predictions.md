@@ -1,7 +1,7 @@
 # Ink predictions on PHerc. 1447: a documented negative result
 
 *Three `auto_grown` segments of a Grand-Prize-eligible scroll, run through the
-public `ink_9um` models and through ScrollScout. No text was found. This
+public `ink_9um` models and through ScrollRank. No text was found. This
 document records how, what was measured, and the one candidate that crossed the
 threshold and then failed verification — because a negative result nobody can
 reproduce is worth nothing, and a candidate nobody retired is worse.*
@@ -92,7 +92,7 @@ is present, the same two seeds produce score fields correlating at 0.78
 candidate was an artefact of averaging: two uncorrelated peaks summed into a
 place neither seed ranks first.
 
-This is now a command, `scrollscout concordance`, so the check is not something
+This is now a command, `scrollrank concordance`, so the check is not something
 one has to remember to do. Run on all three segments it gives:
 
 | segment | Spearman | top-decile IoU | top-1 IoU |
@@ -151,9 +151,9 @@ pseudo-labelling from any region that shows structure under a finer render.
 Notebook steps as listed above; scoring with this repository at tag `v0.7`:
 
 ```bash
-scrollscout score data/1447_pred/mean_025628.tif --pixel-size-um 8.64 \
+scrollrank score data/1447_pred/mean_025628.tif --pixel-size-um 8.64 \
   --window-mm 10 --stride-mm 2 --no-auto-mask --out out/pred1447_025628
-scrollscout concordance data/1447_pred/p025628_s42.tif data/1447_pred/p025628_s43.tif \
+scrollrank concordance data/1447_pred/p025628_s42.tif data/1447_pred/p025628_s43.tif \
   --pixel-size-um 8.64 --no-auto-mask
 ```
 

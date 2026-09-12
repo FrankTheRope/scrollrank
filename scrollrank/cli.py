@@ -1,10 +1,10 @@
 """
-scrollscout CLI.
+scrollrank CLI.
 
-  scrollscout score PRED.tif --pixel-size-um 9.362 --out out/
-  scrollscout aggregate preds/*.tif --out ensemble/
-  scrollscout catalog [--ls]
-  scrollscout synth --out demo/          # generate synthetic text / noise images
+  scrollrank score PRED.tif --pixel-size-um 9.362 --out out/
+  scrollrank aggregate preds/*.tif --out ensemble/
+  scrollrank catalog [--ls]
+  scrollrank synth --out demo/          # generate synthetic text / noise images
 """
 
 from __future__ import annotations
@@ -145,18 +145,18 @@ def cmd_synth(a: argparse.Namespace) -> int:
     for name, im in imgs.items():
         tifffile.imwrite(out / f"{name}.tif", (np.clip(im, 0, 1) * 255).astype(np.uint8))
         print(f"wrote {out / (name + '.tif')}  shape={im.shape}")
-    print(f"try:  scrollscout score {out}/text_5mm.tif --pixel-size-um {a.pixel_um} --out {out}/score_text")
+    print(f"try:  scrollrank score {out}/text_5mm.tif --pixel-size-um {a.pixel_um} --out {out}/score_text")
     return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="scrollscout", description=__doc__,
+    p = argparse.ArgumentParser(prog="scrollrank", description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
 
     s = sub.add_parser("score", help="rank 4 cm² windows of an ink image by text-likeness")
     s.add_argument("image")
-    s.add_argument("--out", default="scrollscout_out")
+    s.add_argument("--out", default="scrollrank_out")
     s.add_argument("--pixel-size-um", type=float, default=9.362)
     s.add_argument("--working-um", type=float, default=100.0)
     s.add_argument("--window-mm", type=float, default=20.0)

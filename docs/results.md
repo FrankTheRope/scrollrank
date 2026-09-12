@@ -1,12 +1,12 @@
 # Results
 
-*Everything ScrollScout claims, on one page, with links to the experiment that
+*Everything ScrollRank claims, on one page, with links to the experiment that
 produced each number. Every figure below comes from a command in this
 repository run on public Vesuvius Challenge data.*
 
 ## What the tool is
 
-ScrollScout does not detect letters. It measures whether an ink prediction is
+ScrollRank does not detect letters. It measures whether an ink prediction is
 **geometrically credible as writing**, and ranks windows accordingly (4 cm² by
 default; 10 mm windows in the September 2026 experiments), so
 that a human — or a GPU budget — is spent on the most promising regions first.
@@ -81,14 +81,14 @@ first, not by theory.
 ## Commands
 
 ```
-scrollscout score          rank 4 cm² windows; heatmap, overlay, JSON
-scrollscout concordance    do independent runs point at the same places?
-scrollscout benchmark      Recall@K, AP, ablations, baselines vs annotations
-scrollscout benchmark-suite the same across many segments, paired statistics
-scrollscout aggregate      mean / std / consistency over an ensemble
-scrollscout project        surface-volume slices → 2D projections
-scrollscout catalog        the 13 eligible scrolls and their S3 paths
-scrollscout synth          synthetic data, to try it with no downloads
+scrollrank score          rank 4 cm² windows; heatmap, overlay, JSON
+scrollrank concordance    do independent runs point at the same places?
+scrollrank benchmark      Recall@K, AP, ablations, baselines vs annotations
+scrollrank benchmark-suite the same across many segments, paired statistics
+scrollrank aggregate      mean / std / consistency over an ensemble
+scrollrank project        surface-volume slices → 2D projections
+scrollrank catalog        the 13 eligible scrolls and their S3 paths
+scrollrank synth          synthetic data, to try it with no downloads
 ```
 
 ## Reproducing

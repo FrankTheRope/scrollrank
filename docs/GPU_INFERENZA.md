@@ -11,7 +11,7 @@ NVIDIA. Opzioni senza hardware proprio:
   ≥ 100 GB di disco.
 
 Regola d'oro: **la GPU serve solo per il passo 3.** Scarica gli output (TIFF di
-predizione, pochi MB–GB) sul tuo PC e fai tutto il resto con ScrollScout.
+predizione, pochi MB–GB) sul tuo PC e fai tutto il resto con ScrollRank.
 
 ## 0. Setup (una volta per macchina)
 
@@ -35,7 +35,7 @@ chiedi su Discord: è il primo ostacolo di tutti.
 ## 1. Scegli segmento e rotolo
 
 ```bash
-scrollscout catalog --ls          # elenca i segmenti pubblici dei 13 rotoli eleggibili
+scrollrank catalog --ls          # elenca i segmenti pubblici dei 13 rotoli eleggibili
 aws s3 ls --no-sign-request s3://vesuvius-challenge-open-data/PHerc0800/segments/<SEG>/
 ```
 
@@ -59,7 +59,7 @@ vc_render_tifxyz \
 (Per i rotoli eleggibili la voxel size è 8.64 µm; il tutorial usa 9.362 µm per
 PHerc0139. I modelli sono stati addestrati a ~9 µm, quindi 8.64 è nel range.)
 
-## 3. Inferenza: lo "sweep" che alimenta `scrollscout aggregate`
+## 3. Inferenza: lo "sweep" che alimenta `scrollrank aggregate`
 
 ```bash
 for SEED in 42 43; do
@@ -83,8 +83,8 @@ Tempo: dell'ordine di un'ora per run per segmento su una GPU media — riduci co
 ## 4. Torna su CPU
 
 ```bash
-scrollscout aggregate preds/<SEG>_*.tif --out out/<SEG>_ens
-scrollscout score out/<SEG>_ens/mean.tif --pixel-size-um 8.64 --out out/<SEG>_score
+scrollrank aggregate preds/<SEG>_*.tif --out out/<SEG>_ens
+scrollrank score out/<SEG>_ens/mean.tif --pixel-size-um 8.64 --out out/<SEG>_score
 ```
 
 Guarda `overlay.png` e `consistency.tif`. Le finestre in cima alla classifica

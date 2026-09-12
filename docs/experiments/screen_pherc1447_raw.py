@@ -1,6 +1,6 @@
 """Screen the ink predictions the Challenge team published for the raw
 z_dbg_gen segments of PHerc1447 (three models: gp, s5, tracer_ft; both
-directions) with ScrollScout, CPU only.
+directions) with ScrollRank, CPU only.
 
     python3 docs/experiments/screen_pherc1447_raw.py [--workers 6]
 
@@ -26,8 +26,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from scrollscout.letterness import ScoreConfig, load_image, score_image  # noqa: E402
-from scrollscout.concordance import _spearman  # noqa: E402
+from scrollrank.letterness import ScoreConfig, load_image, score_image  # noqa: E402
+from scrollrank.concordance import _spearman  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "1447_raw_pred"

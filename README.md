@@ -1,4 +1,11 @@
-# ScrollScout
+# ScrollRank
+
+> **Formerly ScrollScout** (renamed on 12 September 2026). The name clashed with
+> [vonduffen/scrollscout](https://github.com/vonduffen/scrollscout), an unrelated
+> tool for streaming scroll volumes, published on PyPI in July 2026, earlier than
+> this project. Old links to `github.com/FrankTheRope/scrollscout`, including the
+> September 2026 Progress Prize submission (tag `progress-2026-09b`), redirect here.
+> The command and the Python package are now `scrollrank`.
 
 **CPU-first ink prospecting for the Vesuvius Challenge.**
 Ranks 4 cm² windows of an ink-prediction image (or a raw surface render) by how
@@ -11,7 +18,7 @@ predictions produced by the public `scrollprize/ink_9um` models (or any other).
 
 ```
                      GPU (rented / free tier)             CPU (this repo)
- tifxyz segment ──► vc_render_tifxyz ──► ink_9um ──► scrollscout aggregate ──► scrollscout score
+ tifxyz segment ──► vc_render_tifxyz ──► ink_9um ──► scrollrank aggregate ──► scrollrank score
                      (surface volume)   (N runs:      (mean / std / consistency)   (ranked 4 cm²
                                         seeds, ckpts,                              windows + heatmap)
                                         depth windows)
@@ -19,24 +26,24 @@ predictions produced by the public `scrollprize/ink_9um` models (or any other).
 
 ![Top-8 windows on PHerc0139 w035](docs/img/gallery_w035.png)
 
-*Top-8 non-overlapping 10 mm windows on the public `ink_9um` prediction of PHerc0139 w035, ranked by ScrollScout. The detected line pitch (4.7-4.9 mm) is the measured pitch of the scroll's hand.*
+*Top-8 non-overlapping 10 mm windows on the public `ink_9um` prediction of PHerc0139 w035, ranked by ScrollRank. The detected line pitch (4.7-4.9 mm) is the measured pitch of the scroll's hand.*
 
 **[All results on one page →](docs/results.md)**
 
 ## Install
 
 ```bash
-git clone <this repo> && cd scrollscout
+git clone <this repo> && cd scrollrank
 pip install -e .            # numpy, scipy, scikit-image, tifffile, pillow
-scrollscout --help
+scrollrank --help
 ```
 
 ## Try it in 30 seconds (no scroll data needed)
 
 ```bash
-scrollscout synth --out demo                                   # synthetic text / noise / stripes
-scrollscout score demo/text_tilted.tif --pixel-size-um 100 --out demo/score_text
-scrollscout score demo/noise.tif       --pixel-size-um 100 --out demo/score_noise
+scrollrank synth --out demo                                   # synthetic text / noise / stripes
+scrollrank score demo/text_tilted.tif --pixel-size-um 100 --out demo/score_text
+scrollrank score demo/noise.tif       --pixel-size-um 100 --out demo/score_noise
 ```
 
 Text windows score ≈ 0.9–1.0, blobby noise ≈ 0.1–0.3, pure stripes ≈ 0.3.
@@ -48,14 +55,14 @@ and tilt).
 
 ```bash
 # 1. a prediction image from the ink tutorial / ink_9um models (ink bright)
-scrollscout score predictions/w035_9um.tif --pixel-size-um 9.362 --out out/w035
+scrollrank score predictions/w035_9um.tif --pixel-size-um 9.362 --out out/w035
 
 # 2. several runs of the same segment (2 seeds x checkpoints x depth windows x directions)
-scrollscout aggregate preds/w035_*.tif --out out/w035_ens
-scrollscout score out/w035_ens/mean.tif --pixel-size-um 9.362 --out out/w035_ens/score
+scrollrank aggregate preds/w035_*.tif --out out/w035_ens
+scrollrank score out/w035_ens/mean.tif --pixel-size-um 9.362 --out out/w035_ens/score
 
 # 3. the 13 eligible scrolls and where their data lives
-scrollscout catalog --ls        # needs `aws` CLI; bucket is public (no account)
+scrollrank catalog --ls        # needs `aws` CLI; bucket is public (no account)
 ```
 
 Useful flags: `--window-mm 20 --stride-mm 5` (prize area), `--pitch-min/--pitch-max`
@@ -64,7 +71,7 @@ Useful flags: `--window-mm 20 --stride-mm 5` (prize area), `--pitch-min/--pitch-
 
 ## How the score works
 
-**ScrollScout does not detect letters. It measures whether an ink prediction is
+**ScrollRank does not detect letters. It measures whether an ink prediction is
 geometrically credible as writing**, and ranks windows accordingly.
 
 For every window (default 20 x 20 mm, stride 5 mm, analysed at ~0.1 mm/px), the
@@ -99,7 +106,7 @@ percentile): text predictions 1.00 against raw papyrus renders 0.10-0.26, and
 * Thresholds were set on synthetic data and a handful of public predictions.
   Expect to retune `--pitch-*`, `--letter-*` and the ink band per scroll
   (letter size varies between scribes).
-* Prediction images must be *programmatically generated*; ScrollScout never
+* Prediction images must be *programmatically generated*; ScrollRank never
   touches the image content, it only reads it.
 * The `ink_9um` models are sensitive to depth offsets — always feed
   `aggregate` several depth windows and look at `consistency.tif`: text that

@@ -2,7 +2,7 @@
 
     python3 docs/experiments/score_control_pherc1667.py [--preds data/1667_ctrl] [--canon work/kaggle_1667_w028/w028_crop_pred_canon.png]
 
-For each of the twelve ink_9um predictions of the w028 crop: ScrollScout
+For each of the twelve ink_9um predictions of the w028 crop: ScrollRank
 score grid at 10 mm / 2 mm, max, p95, pitch; Spearman against the team's
 published prediction of the same crop (same grid, both 26.9 mm wide) and
 against the other seed. Prints the table of the document.
@@ -16,8 +16,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from scrollscout.letterness import ScoreConfig, load_image, score_image  # noqa: E402
-from scrollscout.concordance import _spearman  # noqa: E402
+from scrollrank.letterness import ScoreConfig, load_image, score_image  # noqa: E402
+from scrollrank.concordance import _spearman  # noqa: E402
 
 
 def main() -> int:

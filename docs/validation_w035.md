@@ -1,4 +1,4 @@
-# Validation: real ink predictions on a known-text segment (ScrollScout v0.3)
+# Validation: real ink predictions on a known-text segment (ScrollRank v0.3)
 
 *The raw-render baseline (`baseline_pherc1447.md`) establishes what the scorer
 does on papyrus without ink. This document establishes what it does on real
@@ -25,9 +25,9 @@ No training, no fitting: the scorer was frozen before these images were used.
 ## Commands
 
 ```bash
-scrollscout score data/w035_pred/seed42.tif --pixel-size-um 34.0 \
+scrollrank score data/w035_pred/seed42.tif --pixel-size-um 34.0 \
   --window-mm 10 --stride-mm 2 --no-auto-mask --out out/w035_pred42 --top-k 8
-scrollscout score data/w035_pred/seed43.tif --pixel-size-um 34.0 \
+scrollrank score data/w035_pred/seed43.tif --pixel-size-um 34.0 \
   --window-mm 10 --stride-mm 2 --no-auto-mask --out out/w035_pred43 --top-k 8
 ```
 

@@ -7,7 +7,7 @@ resolution `ink_9um` was trained at — with `vc_render_tifxyz`
 (docs/RENDERING.md; six renderer processes in parallel, 5-23 min per segment,
 5.5 GB in all), run through `ink_9um` on a free Kaggle session (two T4s, one
 seed each, `--batch-size 16`; docs/experiments/kaggle_ink9um_sweep.sh; 264
-predictions in 2 h 20 min), and scored with ScrollScout v0.8 at 0°, +45° and
+predictions in 2 h 20 min), and scored with ScrollRank v0.8 at 0°, +45° and
 −45°, masked to the mesh:
 
     SCROLL=1203 python3 docs/experiments/sweep_pherc1447_auto.py

@@ -12,7 +12,7 @@ import sys
 import numpy as np
 
 sys.path.insert(0, ".")
-from scrollscout.letterness import ScoreConfig, load_image, score_image  # noqa: E402
+from scrollrank.letterness import ScoreConfig, load_image, score_image  # noqa: E402
 
 SUBS = ("line_periodicity", "stroke_shape", "anisotropy", "ink_fraction")
 

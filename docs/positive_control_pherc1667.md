@@ -18,7 +18,7 @@ on a text-dense crop of 27 × 19 mm (ds8 preview region x 300-1700,
 y 2300-3300; 391 uncompressed chunks, 700 MB, fetched straight from the
 bucket). Then the usual Kaggle sweep: seeds 42 and 43, depth windows 0-16,
 5-21, 10-26 of the 27 slices, both directions — 12 predictions. Scored with
-ScrollScout v0.8 at 10 mm / 2 mm, and compared window by window with the
+ScrollRank v0.8 at 10 mm / 2 mm, and compared window by window with the
 published prediction of the same crop (same grid: both crops are 26.9 mm
 wide).
 
@@ -38,7 +38,7 @@ wide).
 | `ink_9um`, all six reverse runs | 0.23-0.47 | 0.16-0.39 | 3.1-4.8 | −0.12 to 0.27 | −0.08 to 0.25 |
 
 **Two measures, two answers — and the second corrects the first.** Compared
-by ScrollScout window rankings, the twelve `ink_9um` runs do not agree with
+by ScrollRank window rankings, the twelve `ink_9um` runs do not agree with
 the published model (Spearman −0.42 to 0.27). But this crop is text from edge
 to edge, and ranking windows inside a fully written area is exactly what the
 tool cannot do (see benchmark_pherc0139.md); that comparison was the wrong
@@ -71,7 +71,7 @@ practical: with the public checkpoint, check both orders on a new segment and
 keep the one the model can read; on PHerc1447 and PHerc1203 neither order was
 readable.
 
-ScrollScout's own score would have been fooled either way — 0.74 at the right
+ScrollRank's own score would have been fooled either way — 0.74 at the right
 pitch on blotches — one more instance of the band-and-blotch false positive,
 here on real text. And the two seeds agree with each other (0.53-0.69) more
 than either agrees with the published letters at window level: seed agreement
@@ -97,7 +97,7 @@ the officially labelled part, but no legible glyphs, and only in one depth
 order. Read the negatives on PHerc1447,
 PHerc0800 and PHerc1203 accordingly: a blurred, weakened version of the ink
 signal may be present in those predictions without ever forming rows that
-ScrollScout or the eye can recognise — *the model sees dimly*, not *there is
+ScrollRank or the eye can recognise — *the model sees dimly*, not *there is
 no ink*, and not *the model is blind* either. The pixel-level test against a
 second model, not the window ranking, is the right instrument for this
 question; it is now in the repo.
