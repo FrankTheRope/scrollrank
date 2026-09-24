@@ -41,6 +41,8 @@ for the pointer.
       --num-slices 31 --cache-gb 8 --voxel-size 8.64 --voxel-unit micrometer \
       --zarr-output work/<SEG>_render.zarr
 
-One slice of a 3240x2980 segment took 14 min, almost all of it fetching chunks;
-the chunk cache persists in work/cache so later renders are much faster. Use
+One slice of a 3240x2980 segment took 14 min, almost all of it fetching chunks.
+The chunk cache lives in memory only (work/cache stays empty), so every render
+fetches its chunks again; several renderer processes in parallel (6-7, ~0.7 GB
+RAM each) are network-bound and safe. Use
 `--zarr-output` for inference input, `--tif-output` to inspect slices.
