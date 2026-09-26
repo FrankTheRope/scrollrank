@@ -1,8 +1,11 @@
 # Rendering a tifxyz mesh without building VC3D
 
 `vc_render_tifxyz` builds on its own, without Ceres and without the GUI. Verified
-on Ubuntu 24 (WSL) against the official surface volume of PHerc1447 segment
-235910: the central slice correlates at 0.998.
+on Ubuntu 26.04 (WSL) against the official surface volume of PHerc1447 segment
+235910: the central slice correlates at 0.998. (An earlier version of this page
+said Ubuntu 24; corrected 26 September 2026. Not tried on older releases: villa's
+own toolchain script, `volume-cartographer/scripts/install_build_deps.sh`, asks for
+`flang-21` and `libclang-rt-21-dev`, which only 26.04 ships.)
 
 **The depth order comes out reversed.** With the command below, local slice *i*
 matches official slice *30 − i* (r = 0.99 at every depth; same-index r ≈ 0.0
